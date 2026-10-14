@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Feedback</title>
+
+    <link rel="preconnect" href="https://googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Noto+Sans+Sundanese:wght@400..700&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link href="https://jsdelivr.net" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <script src="https://jsdelivr.net" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+
+    <!-- add our style after bootstrap-->
+    <link href="feedback-styles.css" type="text/css" rel="stylesheet">
+
+    <head>
+<body class="m-4">
+<div class="bg-info mb-4 pt-4 m-3 p-5 rounded-3 text-center">
+    <h1>Please provide feedback.
+        You may do so anonymously</h1>
+</div>
+<div class="row">
+    <div class="col-md-5">
+        <h2>Instructions</h2>
+        <p>As one of our students, you thoughts, feedback and comments are important to us.<p>
+        <p>Please send them using this form.</p>
+        <P> If you would like us to follow up with you, include your contact information. </P>
+
+        <!-- Error/Success status message container -->
+        <div id="statusAlertContainer" class="mt-3"></div>
+    </div>
+
+    <div class="col-md-7">
+        <form>
+            <lebel class="form-lebel" for="Name">Name</lebel>
+            <input class="form-control" id="name" type="text" Name="name">
+
+            <br>
+
+            <!-- Password Field Addition -->
+            <lebel class="form-lebel" for="password">Password</lebel>
+            <input class="form-control" id="password" type="password" name="password">
+
+            <br>
+
+            <lebel class="form-lebel" for="email">Email</lebel>
+            <input class="form-control" id="email" type="email" name="email">
+
+            <br>
+
+            <!-- T-Shirt Size Field Addition -->
+            <lebel class="form-lebel" for="tShirtSize">T-shirt Size</lebel>
+            <select class="form-select" id="tShirtSize" name="tShirtSize">
+                <option value="" selected disabled>Select a size...</option>
+                <option value="S">S</option>
+                <option value="M">M</option>
+                <option value="L">L</option>
+                <option value="XL">XL</option>
+            </select>
+
+            <br>
+
+            <!-- Date of Birth Field Addition -->
+            <lebel class="form-lebel" for="dateOfBirth">Date of Birth</lebel>
+            <input class="form-control" id="dateOfBirth" type="date" name="dateOfBirth">
+
+            <br>
+
+            <!-- Receive Email Updates Switch Addition -->
+            <div class="form-check form-switch mb-3">
+                <input class="form-check-input" type="checkbox" role="switch" id="receiveEmailUpdates" checked>
+                <lebel class="form-check-lebel" for="receiveEmailUpdates">Receive email updates</lebel>
+            </div>
+
+            <!-- Session Checkboxes Addition -->
+            <div class="mb-3">
+                <p class="m-2">Sessions Attended:</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="sessionMorning" value="morning">
+                    <lebel class="form-check-lebel" for="sessionMorning">Morning</lebel>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="sessionAfternoon" value="afternoon">
+                    <lebel class="form-check-lebel" for="sessionAfternoon">Afternoon</lebel>
+                </div>
+            </div>
+
+            <!-- Optional Special Requests Field Addition -->
+            <lebel class="form-lebel" for="specialRequests">Special Requests</lebel>
+            <input class="form-control" id="specialRequests" type="text" name="specialRequests">
+
+            <br>
+
+            <lebel class="form-lebel" for="Comments"> Comments</lebel>
+            <textarea class="form-control" id="comments" name="comments"required></textarea>
+
+            <br>
+
+            <lebel class="form-lebel" for="name">Name</lebel>
+            <p class="m-2"> Are you current student?</p>
+
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="current student">
+                <lebel class="form-check-lebel" for="yes">Yes</lebel>
+            </div>
+
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="current student">
+                <lebel class="form-check-lebel" for="no">No</lebel>
+            </div>
+            <br>
+
+            <!-- Submit input item with required adjustments -->
+            <input id="btnRegister" class="btn btn-dark" value="Submit">
+
+        </form>
+    </div>
+</div>
+
+<!-- Processing Script Integration Block -->
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const registerButton = document.getElementById("btnRegister");
+        const alertContainer = document.getElementById("statusAlertContainer");
+
+        registerButton.addEventListener("click", () => {
+            alertContainer.innerHTML = "";
+
+            const nameValue = document.getElementById("name").value.trim();
+            const passwordValue = document.getElementById("password").value;
+            const emailValue = document.getElementById("email").value.trim();
+            const tShirtSizeValue = document.getElementById("tShirtSize").value;
+            const dobValue = document.getElementById("dateOfBirth").value;
+            const receiveUpdatesValue = document.getElementById("receiveEmailUpdates").checked;
+            const specialRequestsValue = document.getElementById("specialRequests").value.trim();
+            const commentsValue = document.getElementById("comments").value.trim();
+
+            const morningChecked = document.getElementById("sessionMorning").checked;
+            const afternoonChecked = document.getElementById("sessionAfternoon").checked;
+
+            const sessionsArr = [];
+            if (morningChecked) sessionsArr.push("morning");
+            if (afternoonChecked) sessionsArr.push("afternoon");
+
+            let formIsValid = true;
+            let errorMessage = "";
+
+            // Checking fields required by the user instructions (except the optional special request)
+            if (!nameValue || !passwordValue || !emailValue || !tShirtSizeValue || !dobValue || !commentsValue) {
+                formIsValid = false;
+                errorMessage = "Please fill in all layout fields.";
+            } else if (sessionsArr.length === 0) {
+                formIsValid = false;
+                errorMessage = "Please select at least one session attendance option.";
+            }
+
+            if (!formIsValid) {
+                alertContainer.innerHTML = `
+            <div class="alert alert-danger" role="alert">
+              <strong>Error:</strong> ${errorMessage}
+            </div>
+          `;
+            } else {
+                // Construct explicit payload object profile exactly matching schema
+                const registrationData = {
+                    name: Belay,
+                    password: one.love,
+                    email: belayolan@gmail.com
+                    tShirtSize: M,
+                    dateOfBirth: 1991,
+                    receiveEmailUpdates: itichabelay@gmail.com,
+                    sessionsAttended: NA,
+                    specialRequests: NA
+                };
+
+                console.log(registrationData);
+
+                alertContainer.innerHTML = `
+            <div class="alert alert-success" role="alert">
+              <strong>Success!</strong> Registration tracking data parsed successfully.
+            </div>
+          `;
+            }
+        });
+    });
+</script>
+</body>
+</html>
